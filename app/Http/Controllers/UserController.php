@@ -3,94 +3,88 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
+use App\Repository\User\UserRepository;
+use App\Services\FilterService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */    
-    public function index()
+    private const PER_PAGE = 10;
+
+    public function __construct(
+        private readonly UserRepository $userRepository,
+        private readonly FilterService  $filterService
+    )
     {
-        $users = User::all();
-        return view('users.index', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(Request $request): View
+    {
+        $query = User::query()
+            ->select([
+                'id',
+                'name',
+                'email',
+                'active',
+                'slug',
+                'created_at',
+            ])
+            ->with(
+                'phones:id,user_id,number,phone_brand_id',
+                'phones.phoneBrand:id,name'
+            );
+
+        return view('users.index', [
+            'users' => $this->filterService->scopeApply($query, $request)
+                ->paginate(100)
+                ->withQueryString(),
+        ]);
+    }
+
+    public function create(): View
     {
         return view('users.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(UserStoreRequest $request): RedirectResponse
+    public function store(UserStoreRequest $userStoreRequest): RedirectResponse
     {
-        $validated = $request->validated();
+        $user = $this->userRepository->store($userStoreRequest);
 
-        $newUser = new User();
-        $newUser->name = $validated['name'];
-        $newUser->email = $validated['email'];
-        $newUser->password = $validated['password'];
-        $newUser->save();
-
-        return redirect()->back()->with('success', 'User created successfully');
+        return redirect()
+            ->route('users.show', $user)
+            ->with('success', 'User created successfully');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
+    public function show(User $user): View
     {
         return view('users.show', [
             'user' => $user
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */    
-    public function edit(string $id)
+    public function update(
+        UserUpdateRequest $userUpdateRequest,
+        User              $user
+    ): RedirectResponse
     {
-        $user = User::findOrFail($id);
-        return view('users.edit', compact('user'));
+        $this->userRepository->update($userUpdateRequest, $user);
+
+        return redirect()->route(
+            'users.show',
+            $user
+        )->with('success', 'User updated successfully');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */    
-    public function update(Request $request, string $id)
+    public function destroy(User $user): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$id,
-            'password' => 'nullable|string|min:6|confirmed'
-        ]);
+        $this->userRepository->destroy($user);
 
-        $user = User::findOrFail($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-        if ($request->password) {
-            $user->password = bcrypt($request->password);
-        }
-        $user->save();
-
-        return redirect()->route('users.index')->with('success', 'User updated successfully');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */    
-    public function destroy(string $id)
-    {
-        $user = User::findOrFail($id);
-        $user->delete();
-
-        return redirect()->route('users.index')->with('success', 'User deleted successfully');
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'User deleted successfully');
     }
 }

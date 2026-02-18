@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('title', 'Редактирование пользователя')
 
@@ -49,6 +49,38 @@
                 <form method="POST" action="{{ route('users.update', $user->id) }}" class="space-y-6">
                     @csrf
                     @method('PUT')
+
+                    <div class="px-8 pt-2 pb-8 bg-gradient-to-b from-indigo-600/10 to-transparent">
+                        <div class="flex flex-col items-center">
+                            <div class="relative group">
+                                <!-- Аватар с обводкой и эффектом при наведении -->
+                                <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-2xl transition-all duration-300 group-hover:shadow-indigo-500/40 group-hover:scale-105">
+                                    <img
+                                        src="{{ $user->avatarPath() ? asset($user->avatarPath()) : asset('images/default-avatar.png') }}"
+                                        alt="{{ $user->name }}"
+                                        class="w-full h-full object-cover"
+                                    >
+                                </div>
+
+                                <!-- Кнопка/иконка изменения аватарки (можно сделать кликабельной позже) -->
+                                <label for="avatar" class="absolute bottom-0 right-0 bg-indigo-600 text-white p-2 rounded-full cursor-pointer shadow-lg hover:bg-indigo-700 transition transform hover:scale-110">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <!-- Скрытый input для загрузки файла (добавьте позже в форму) -->
+                                    <input type="file" id="avatar" name="avatar" class="hidden" accept="image/*">
+                                </label>
+                            </div>
+
+                            <h3 class="mt-4 text-lg font-semibold text-gray-800 dark:text-gray-200">
+                                {{ $user->name }}
+                            </h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                {{ $user->email }}
+                            </p>
+                        </div>
+                    </div>
 
                     <!-- Имя -->
                     <div>

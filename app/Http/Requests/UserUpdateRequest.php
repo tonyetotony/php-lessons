@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserStoreRequest extends FormRequest
+class UserUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,10 +14,10 @@ class UserStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|min:5|max:50',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|confirmed',
-            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,gif'
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $this->route()->parameter('user')->id,
+            'password' => 'nullable|string|min:6|confirmed',
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ];
     }
 
