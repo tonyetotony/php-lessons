@@ -81,6 +81,17 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
+        // Проверяем, есть ли у пользователя аватар
+        if ($user->avatar) {
+            $avatarPath = $user->avatarPath();
+            
+            // Удаляем файл аватара, если он существует
+            if ($avatarPath && file_exists($avatarPath)) {
+                unlink($avatarPath);
+            }
+        }
+        
+        // Удаляем пользователя через репозиторий
         $this->userRepository->destroy($user);
 
         return redirect()
