@@ -40,7 +40,7 @@ class UserController extends Controller
 
         return view('users.index', [
             'users' => $this->filterService->scopeApply($query, $request)
-                ->paginate(100)
+                ->paginate(10)
                 ->withQueryString(),
         ]);
     }

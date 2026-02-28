@@ -1,21 +1,28 @@
 <?php
 
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::resource('users', UserController::class)
-->except(['edit'])->middleware('auth');
-
-//Route::prefix('users')->group(function () {
-//    Route::get('', [UserController::class, 'index'])->name('users.index');
-//    Route::get('{id}', [UserController::class, 'show'])->name('users.show');
-//    Route::post('', [UserController::class, 'store'])->name('users.store');
-//    Route::delete('{id}', [UserController::class, 'destroy'])->name('users.destroy');
-//    Route::patch('{id}', [UserController::class, 'update'])->name('users.update');
-//});
-
 Auth::routes();
 
+Route::middleware('auth')->group(function () {
+    // USER CONTROLLER
+    Route::resource('users', UserController::class)
+        ->except(['edit']);
+
+    // VIDEO CONTROLLER
+    Route::prefix('videos')->name('videos.')->group(function () {
+        Route::get('', [VideoController::class, 'index'])->name('index');
+        Route::post('', [VideoController::class, 'store'])->name('store');
+        Route::get('create', [VideoController::class, 'create'])->name('create');
+        Route::get('{video}', [VideoController::class, 'show'])->name('show');
+    });
+
+    // CHANNEL CONTROLLER
+    Route::prefix('channels')->name('channels.')->group(function () {
+        Route::get('{channel}', [ChannelController::class, 'show'])->name('show');
+    });
+});

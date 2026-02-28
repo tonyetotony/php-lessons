@@ -7,6 +7,7 @@ use App\Models\PhoneBrand;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -32,13 +33,21 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        if (!User::query()->where('email', 'admin@mail.ru')->exists()) {
+            User::query()->create([
+                'name' => 'Admin',
+                'email' => 'admin@mail.ru',
+                'password' => Hash::make('adminadmin'),
+            ]);
+        }
+
         User::factory()
             ->has(Phone::factory()->count(3), 'phones')
             ->count(100)->create();
 
-//        User::factory()->create([
-//            'name' => 'Test User',
-//            'email' => 'test@example.com',
-//        ]);
+        $this->call([
+            ChannelSeeder::class,
+            VideoSeeder::class,
+        ]);
     }
 }
