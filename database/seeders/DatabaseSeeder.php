@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -38,16 +39,18 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Admin',
                 'email' => 'admin@mail.ru',
                 'password' => Hash::make('adminadmin'),
+                'slug' => Str::slug('Admin')
             ]);
         }
 
         User::factory()
             ->has(Phone::factory()->count(3), 'phones')
-            ->count(100)->create();
+            ->count(10)->create();
 
         $this->call([
             ChannelSeeder::class,
             VideoSeeder::class,
+            SettingSeeder::class
         ]);
     }
 }

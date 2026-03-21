@@ -22,6 +22,8 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->string('genre');
             $table->timestamps();
+
+            $table->index(['title', 'genre', 'description']);
         });
     }
 

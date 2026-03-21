@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Models\Setting;
 use App\Models\User;
 use App\Repository\User\UserRepository;
 use App\Services\FilterService;
@@ -38,10 +39,16 @@ class UserController extends Controller
                 'phones.phoneBrand:id,name'
             );
 
+        $setting = Setting::query()->find(3);
+        if (!$setting) {
+            $setting = [];
+        }
+
         return view('users.index', [
             'users' => $this->filterService->scopeApply($query, $request)
-                ->paginate(10)
+                ->paginate(self::PER_PAGE)
                 ->withQueryString(),
+            'setting' => $setting,
         ]);
     }
 
@@ -81,17 +88,6 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
-        // Проверяем, есть ли у пользователя аватар
-        if ($user->avatar) {
-            $avatarPath = $user->avatarPath();
-            
-            // Удаляем файл аватара, если он существует
-            if ($avatarPath && file_exists($avatarPath)) {
-                unlink($avatarPath);
-            }
-        }
-        
-        // Удаляем пользователя через репозиторий
         $this->userRepository->destroy($user);
 
         return redirect()

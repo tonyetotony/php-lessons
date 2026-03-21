@@ -108,4 +108,13 @@ class User extends Authenticatable
     {
         return $this->hasOne(Channel::class);
     }
+
+    public function settings(): BelongsToMany
+    {
+        return $this->belongsToMany(Setting::class)->withPivot([
+            'name',
+            'value',
+            'label'
+        ]);
+    }
 }
