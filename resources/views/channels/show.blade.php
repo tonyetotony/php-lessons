@@ -63,6 +63,14 @@
                     <button class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-full transition">
                         Донат
                     </button>
+                    <a href="{{ route('videos.create') }}"
+                       class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-full transition">
+                        Добавить видео
+                    </a>
+                    <a href="{{ route('channels.edit', $channel) }}"
+                       class="px-6 py-3 bg-gray-600 hover:bg-gray-500 text-white font-medium rounded-full transition">
+                        Редактировать канал
+                    </a>
                 </div>
             </div>
         </div>

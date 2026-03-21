@@ -6,19 +6,19 @@ use Illuminate\Support\Facades\Storage;
 
 class FolderService
 {
-    public function fileMv(string $filePath, string $folderName): string
+    public function fileMv($file, string $folderName): string
     {
-        // Получаем содержимое файла
-        $content = file_get_contents($filePath);
+        if (!($file instanceof \Illuminate\Http\UploadedFile)) {
+            throw new \InvalidArgumentException('Expected an instance of UploadedFile.');
+        }
 
-        $hashedName = md5($filePath . time()) . '.' . 'jpeg';
-
+        $originalName = $file->getClientOriginalName();
+        $hashedName = md5($originalName . time()) . '.' . $file->getClientOriginalExtension();
 
         $storagePath = $folderName . '/' . $hashedName;
 
-        Storage::disk('public')->put($storagePath, $content);
+        Storage::disk('public')->put($storagePath, file_get_contents($file->getRealPath()));
 
-        // Получаем публичный путь
         return Storage::url($storagePath);
     }
 }

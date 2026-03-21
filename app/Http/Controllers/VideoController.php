@@ -21,9 +21,31 @@ class VideoController extends Controller
 
     public function index(): View
     {
-        $videos = Video::query()->paginate(self::PER_PAGE);
+        $user = Auth::user();
+        $channelId = $user->myChannel ? $user->myChannel->id : null;
+        $videos = $channelId ? Video::query()->where('channel_id', $channelId)->paginate(self::PER_PAGE) : collect([]);
 
         return view('videos.index', [
+            'videos' => $videos
+        ]);
+    }
+
+    public function publicIndex(Request $request): View
+    {
+        $query = Video::query();
+
+        if ($request->get('filter') === 'mine') {
+            $user = Auth::user();
+            if ($user && $user->myChannel) {
+                $query->where('channel_id', $user->myChannel->id);
+            } else {
+                $query->whereNull('id'); // Возвращаем пустой результат если пользователь не авторизован или у него нет канала
+            }
+        }
+
+        $videos = $query->paginate(self::PER_PAGE);
+
+        return view('videos.public', [
             'videos' => $videos
         ]);
     }
@@ -40,7 +62,7 @@ class VideoController extends Controller
         $user = Auth::user();
 
         if (!$user->myChannel) {
-            return redirect()->route('videos.index');
+            return redirect()->route('videos.index')->with('error', 'Создайте канал, чтобы загружать видео.');
         }
         return view('videos.create');
     }
@@ -51,11 +73,20 @@ class VideoController extends Controller
             'path' => 'required|unique:videos,path',
         ]);
 
-        $data = $request->input();
-        $data['cover_path'] = $this->folderService->fileMv($data['cover'], 'cover');
-        $data['path'] = $this->extractRutubeEmbedUrl($data['path']);
+        $user = Auth::user();
+        if (!$user->myChannel) {
+            return redirect()->route('videos.index')->with('error', 'Создайте канал, чтобы загружать видео.');
+        }
 
-        $data['channel_id'] = Auth::user()->myChannel->id;
+        $data = $request->all();
+        
+        if ($request->hasFile('cover')) {
+            $data['cover_path'] = $this->folderService->fileMv($data['cover'], 'cover');
+        }
+        
+        $data['path'] = $this->extractRutubeEmbedUrl($data['path']);
+        $data['channel_id'] = $user->myChannel->id;
+
         $video = Video::query()->create($data);
 
         return redirect()->route('videos.show', $video->id);

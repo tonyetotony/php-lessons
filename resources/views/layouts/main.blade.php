@@ -50,11 +50,15 @@
 
             <!-- Навигация (можно расширить) -->
             <nav class="hidden md:flex items-center gap-8">
+                <a href="{{ route('dashboard.my-channel') }}"
+                   class="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition">
+                    Мой канал
+                </a>
                 <a href="{{ route('users.index') }}"
                    class="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition">
                     Пользователи
                 </a>
-                <a href="{{route('videos.index') }}"
+                <a href="{{ route('videos.public') }}"
                    class="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition">
                     Видео
                 </a>

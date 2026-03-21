@@ -13,7 +13,7 @@
                     Загрузить видео
                 </h1>
                 <p class="mt-2 text-gray-400">
-                    Заполните информацию о видео. Обложка и Rutube-ссылка обязательны.
+                    Заполните ин��ормацию о видео. Обложка и Rutube-ссылка обязательны.
                 </p>
             </div>
 
@@ -108,7 +108,7 @@
                     <label class="block text-lg font-medium text-gray-200 mb-2">
                         Обложка видео <span class="text-red-500">*</span>
                     </label>
-                    <input type="url" name="cover" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition"">
+                    <input type="file" name="cover" accept="image/*" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition" required>
 
                     @error('cover')
                     <p class="mt-2 text-red-400 text-sm">{{ $message }}</p>

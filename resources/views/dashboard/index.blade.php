@@ -12,7 +12,7 @@
                 <p class="mt-2 text-gray-400">Вот что происходит с твоим контентом за последние 30 дней</p>
 
                 <div class="mt-6 flex flex-wrap gap-4">
-                    <a href="#" class="inline-flex items-center px-5 py-2.5 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium transition-colors shadow-lg shadow-purple-900/20">
+                    <a href="{{ route('videos.create') }}" class="inline-flex items-center px-5 py-2.5 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium transition-colors shadow-lg shadow-purple-900/20">
                         <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
