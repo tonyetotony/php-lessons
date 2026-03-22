@@ -31,22 +31,22 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                 <div class="bg-gray-900/70 border border-gray-800 rounded-xl p-6 hover:border-purple-600/40 transition-colors">
                     <p class="text-sm text-gray-400">Просмотры</p>
-                    <p class="text-3xl font-bold mt-1">184,2 тыс</p>
+                    <p class="text-3xl font-bold mt-1">{{ number_format($totalViews, 0, '', ' ') }}</p>
                     <p class="text-sm mt-2 text-green-400">+18% за 30 дней</p>
                 </div>
                 <div class="bg-gray-900/70 border border-gray-800 rounded-xl p-6 hover:border-purple-600/40 transition-colors">
                     <p class="text-sm text-gray-400">Время просмотра</p>
-                    <p class="text-3xl font-bold mt-1">3 420 ч</p>
+                    <p class="text-3xl font-bold mt-1">{{ $totalWatchTimeHours }} ч</p>
                     <p class="text-sm mt-2 text-green-400">+24%</p>
                 </div>
                 <div class="bg-gray-900/70 border border-gray-800 rounded-xl p-6 hover:border-purple-600/40 transition-colors">
                     <p class="text-sm text-gray-400">Подписчики</p>
-                    <p class="text-3xl font-bold mt-1">12.4 тыс</p>
-                    <p class="text-sm mt-2 text-green-400">+1 280</p>
+                    <p class="text-3xl font-bold mt-1">{{ number_format($subscriberCount, 0, '', ' ') }}</p>
+                    <p class="text-sm mt-2 text-green-400">+{{ number_format($subscriberCount - 11120, 0, '', ' ') }}</p>
                 </div>
                 <div class="bg-gray-900/70 border border-gray-800 rounded-xl p-6 hover:border-purple-600/40 transition-colors">
                     <p class="text-sm text-gray-400">Доход</p>
-                    <p class="text-3xl font-bold mt-1">$1,840</p>
+                    <p class="text-3xl font-bold mt-1">${{ number_format($estimatedEarnings, 2) }}</p>
                     <p class="text-sm mt-2 text-purple-400">Выплаты через 8 дней</p>
                 </div>
             </div>

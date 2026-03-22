@@ -37,6 +37,8 @@ Route::middleware('auth')->group(function () {
         Route::get('{channel}', [ChannelController::class, 'show'])->name('show');
         Route::get('{channel}/edit', [ChannelController::class, 'edit'])->name('edit');
         Route::put('{channel}', [ChannelController::class, 'update'])->name('update');
+        Route::post('{channel}/subscribe', [ChannelController::class, 'subscribe'])->name('channels.subscribe');
+        Route::post('{channel}/unsubscribe', [ChannelController::class, 'unsubscribe'])->name('channels.unsubscribe');
     });
 
     Route::resource('settings', SettingController::class);

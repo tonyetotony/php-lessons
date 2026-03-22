@@ -53,7 +53,7 @@ class SettingController extends Controller
         $this->settingRepository->store($request);
 
         return redirect()->route('settings.index')
-            ->with('success', 'Setting created successfully.');
+            ->with('success', 'Настройки успешно созданы.');
     }
 
     public function show(string $id)
@@ -74,7 +74,7 @@ class SettingController extends Controller
         $this->settingRepository->update($request, $setting);
 
         return redirect()->route('settings.index')
-            ->with('success', 'Setting update successfully.');
+            ->with('success', 'Настройки успешно обновлены.');
     }
 
     public function destroy(string $id)

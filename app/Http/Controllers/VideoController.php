@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\VideoGenre;
 
 class VideoController extends Controller
 {
@@ -69,8 +70,12 @@ class VideoController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'genre' => 'required|string|in:' . implode(',', array_column(VideoGenre::cases(), 'value')),
             'path' => 'required|unique:videos,path',
+            'cover' => 'nullable|image|max:10240', // макс 10МБ
         ]);
 
         $user = Auth::user();
@@ -78,7 +83,7 @@ class VideoController extends Controller
             return redirect()->route('videos.index')->with('error', 'Создайте канал, чтобы загружать видео.');
         }
 
-        $data = $request->all();
+        $data = $validatedData;
         
         if ($request->hasFile('cover')) {
             $data['cover_path'] = $this->folderService->fileMv($data['cover'], 'cover');
